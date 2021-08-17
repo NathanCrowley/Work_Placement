@@ -27,8 +27,9 @@ public class Home extends JFrame implements ActionListener {
     static JMenuItem open,store,retrieve;
     //***
     static JMenuItem testcurl;
+    static JMenuItem listChildrenFolders;
 
-    int size = 800;
+    int size = 600;
     int location = 400;
 
     Home(){
@@ -47,14 +48,21 @@ public class Home extends JFrame implements ActionListener {
         addRetrieveTab();
         //***
         addTestCurl();
+        addListChildrenFolders();
 
-        file.add(open);
+        /*file.add(open);
         file.add(store);
         file.add(retrieve);
         //***
-        file.add(testcurl);
+        file.add(testcurl);*/
 
         menuBar.add(file);
+        menuBar.add(listChildrenFolders);
+        menuBar.add(open);
+        menuBar.add(store);
+        menuBar.add(retrieve);
+        //***
+        menuBar.add(testcurl);
 
         frame.add(scrollPane);
         frame.add(menuBar);
@@ -82,11 +90,18 @@ public class Home extends JFrame implements ActionListener {
         testcurl = new JMenuItem("curl API");
         testcurl.addActionListener(this);
     }
+    public void addListChildrenFolders(){
+        listChildrenFolders = new JMenuItem("List Children Folders");
+        listChildrenFolders.addActionListener(this);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==testcurl){
             new curlAPI();
+        }
+        else if (e.getSource()==listChildrenFolders){
+            textArea.setText("LIST CHILLLLLLDREN");
         }
         else if (e.getSource()==open){
             JFileChooser fc = new JFileChooser();
