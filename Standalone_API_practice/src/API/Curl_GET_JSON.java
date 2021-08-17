@@ -59,7 +59,7 @@ public class Curl_GET_JSON {
         System.out.println("GET url endpoints: \n\t- /posts \n\t- /comments \n\t- /albums \n\t- /photos \n\t- /todos \n\t- /users\n");
 
         // get user input endpoint for testing
-        System.out.print("Enter endpoint for testing: ");
+        System.out.print("Enter endpoint for testing: >>>");
         String endpoint = scanner.next();
 
         // create url from user endpoint
@@ -106,6 +106,7 @@ public class Curl_GET_JSON {
         System.out.println(" 1) JSONOject - {.....} :\n");
         JSONObject obj = new JSONObject(responseJSONObject);
         Iterator<String> keys = obj.keys();
+        
 
         while(keys.hasNext()){
             String key = keys.next();

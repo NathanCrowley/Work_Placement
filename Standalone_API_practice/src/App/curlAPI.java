@@ -1,4 +1,4 @@
-package API;
+package App;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -17,7 +17,7 @@ Class to use JFrame to create a GUI that allows a user to enter a API endpoint.
     Then the response of the endpoint is displayed in a text area.
  */
 
-public class JFrameCurl {
+public class curlAPI {
 
     public static String getAPIresult(String url) throws IOException {
         String command = "curl "+url;
@@ -37,7 +37,7 @@ public class JFrameCurl {
         return response;
     }
 
-    public JFrameCurl(){
+    public curlAPI(){
         JFrame frame = new JFrame("API Test Curl");
 
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,7 +84,7 @@ public class JFrameCurl {
     }
 
     public static void main(String[] args) {
-        new JFrameCurl();
+        new curlAPI();
     }
 
     //clears the inputField when a user types the url

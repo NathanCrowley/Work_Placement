@@ -19,7 +19,12 @@ public class JFrameTest {
         f.setLocation(300,200);
 
         final JTextArea textArea = new JTextArea(10,40);
-        f.getContentPane().add(BorderLayout.CENTER,textArea);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        f.getContentPane().add(scrollPane);
 
         final JButton button = new JButton("Click me");
         f.getContentPane().add(BorderLayout.SOUTH, button);
@@ -28,6 +33,16 @@ public class JFrameTest {
             public void actionPerformed(ActionEvent e) {
                 textArea.append("Button was clicked - "+ x[0] +"\n");
                 x[0] +=1;
+            }
+        });
+
+        // Hides and shows text area
+        final JButton hideButton = new JButton("hide/show");
+        f.getContentPane().add(BorderLayout.NORTH,hideButton);
+        hideButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textArea.setVisible(!textArea.isVisible());
             }
         });
 
