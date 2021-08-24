@@ -45,6 +45,7 @@ public class curlAPI {
         frame.setSize(400,500);
 
         final JTextArea apiResultBox = new JTextArea();
+        apiResultBox.setText("Output of curl+URL command....");
 
         final JScrollPane scrollTextArea = new JScrollPane(apiResultBox);
         scrollTextArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -88,7 +89,7 @@ public class curlAPI {
     }
 
     //clears the inputField when a user types the url
-    private static class MyFocusListener extends FocusAdapter{
+    static class MyFocusListener extends FocusAdapter{
         @Override
         public void focusGained(FocusEvent fEvt){
             JTextComponent component = (JTextComponent) fEvt.getSource();
