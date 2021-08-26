@@ -3,7 +3,6 @@ package LogicalDocAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -18,6 +17,8 @@ public class LogicalDOC_API {
         /*listFolders();
         listDocumentsInFolder(100);
         listDocumentsInFolder(101);*/
+
+        System.out.println("Documents Array: "+getDocumentsArray(101));
 
         // POST
         System.out.println("\n\t>>>>>>>>> Testing POST <<<<<<<<<<");
@@ -36,8 +37,7 @@ public class LogicalDOC_API {
         System.out.println("*********************************************************");
     }
 
-
-    // GET
+// GET
     public static String getSid() throws IOException {
         String url = "http://localhost:8081/services/rest/auth/getSid";
         String command = MessageFormat.format("curl -u admin:admin -H \"Accept: application/json\" {0}",url);
@@ -67,9 +67,8 @@ public class LogicalDOC_API {
         JSONArray arr = new JSONArray(response);
         return arr;
     }
-
-    /*public static JSONArray listDocumentsInFolder(int folderID) throws IOException, JSONException {
-        String url = "http://localhost:8081/services/rest/document/listDocuments?folderId="+folderID;
+    public static JSONArray getDocumentsArray(int folderID) throws IOException, JSONException {
+        String url = MessageFormat.format("http://localhost:8081/services/rest/document/listDocuments?folderId={0}",folderID);
         String command = "curl -u admin:admin -H \"Accept: application/json\" "+url;
 
         CommandGETResponse commandGETResponse = new CommandGETResponse();
@@ -77,9 +76,9 @@ public class LogicalDOC_API {
 
         JSONArray arr = new JSONArray(response);
         return arr;
-    }*/
+    }
 
-    // POST
+// POST
     public static void createFolder(String folderPATH) throws IOException {
         /*
         Creates folder from main path /Default/...
@@ -107,10 +106,15 @@ public class LogicalDOC_API {
         Runtime.getRuntime().exec(command);
     }*/
     //public static void createDocument(String fileName, File file){    }
-
     //public static void createDocument() throws IOException{    }
 
-    // DELETE
+// DELETE
+    /*public static void folderDelete(int folderID) throws IOException{
+        String url= "https://localhost:8081/services/rest/folder/deleteSimple";
+        String command = MessageFormat.format("curl -u admin:admin -X DELETE {0} -H \"accept: application/json\" -d folderId={1}",url,folderID);
 
-    // PUT
+        Runtime.getRuntime().exec(command);
+    }*/
+
+// PUT
 }

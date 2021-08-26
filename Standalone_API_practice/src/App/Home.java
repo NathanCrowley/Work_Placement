@@ -32,67 +32,82 @@ public class Home extends JFrame implements ActionListener {
 
     static JFrame frame;
     static JTextArea textArea;
-    static JTextField listDocInput;
-    static JButton submitFolderId;
+    static JTextField listDocInput, createFolderInput, createListDocInput;
+    static JButton submitFolderInput,submitListDocInput;
     static JScrollPane scrollPane;
     static JMenuBar menuBar;
-    static JMenuItem uploadDoc, listFolder, listDoc, createFolder, getBookmarks, addBookmark;
-    static JMenuItem testcurl;
+    static JMenuItem uploadDoc, listFolder, listDoc, createFolder, getBookmarks,testcurl, deleteFolder ,addBookmark;
 
     int size = 700;
     int location = 400;
+    int folderInputLocationY = 5;
+    int folderInputLocationHeight = 20;
+    int folderSubmitWidth = 80;
+
+    String folderPATHSearchBar = "Folder-PATH to create....";
+    String folderIdSearchBar = "Folder-ID to list documents....";
 
     Home(){
         frame = new JFrame("Home");
         menuBar = new JMenuBar();
         textArea = new JTextArea();
 
-        listDocInput = new JTextField("Enter FolderID....");
-        listDocInput.addFocusListener(new curlAPI.MyFocusListener());
-        submitFolderId = new JButton("Submit");
-        submitFolderId.setBounds(size-100,0,80,20);
-        //******
-        listDocInput.setVisible(false);
-        submitFolderId.setVisible(false);
+        Font welcomeFont = new Font("Calibri", Font.BOLD, 20);
+        textArea.setFont(welcomeFont);
+        textArea.setText("\n\n\n\tLogicalDoc Proof of Concept\n");
+        textArea.append("\tby Nathan Crowley 26/08/2021\n");
+
+        createFolderInputANDButton();
+        hideCreateFolderInput();
+
+        createListDocInputANDButton();
+        hidecreateListDocInput();
 
         scrollPane = new JScrollPane(textArea);
-        scrollPane.setBounds(5,25,size-50,size-100);
+        scrollPane.setBounds(5,45,size-50,size-150);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         getBookmarks();
-        addBookmarks();
         listFolders();
         createFolder();
+        //deleteFolder();
+        //addBookmarks();
         uploadDocument();
         listDocuments();
         addTestCurl();
 
         //**** Working ****
         menuBar.add(getBookmarks);
-        menuBar.add(addBookmark);
         menuBar.add(listFolder);
         menuBar.add(createFolder);
         //***** end ****
+        //menuBar.add(addBookmark);
+        //menuBar.add(deleteFolder);
         menuBar.add(uploadDoc);
         menuBar.add(listDoc);
         menuBar.add(testcurl);
 
-        frame.add(submitFolderId);
-        frame.getContentPane().add(BorderLayout.NORTH,listDocInput);
+        frame.add(createFolderInput);
+        frame.add(createListDocInput);
+        frame.add(submitFolderInput);
+        frame.add(submitListDocInput);
+        frame.getRootPane().setDefaultButton(submitFolderInput);
+        frame.getRootPane().setDefaultButton(submitListDocInput);
         frame.add(scrollPane);
         frame.add(menuBar);
         frame.setJMenuBar(menuBar);
         frame.setSize(size,size);
         frame.setLocation(location,location);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        pack();
         frame.setVisible(true);
     }
 
-    private void addBookmarks() {
+    /*private void addBookmarks() {
         addBookmark = new JMenuItem("Add Bookmark");
         addBookmark.addActionListener(this);
-    }
+    }*/
 
     // GET
     public void addTestCurl(){
@@ -120,6 +135,10 @@ public class Home extends JFrame implements ActionListener {
         createFolder = new JMenuItem("Create Folder");
         createFolder.addActionListener(this);
     }
+    /*public void deleteFolder(){
+        deleteFolder = new JMenuItem("Delete Folder");
+        deleteFolder.addActionListener(this);
+    }*/
 
 
 
@@ -127,9 +146,13 @@ public class Home extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         //**** working ****
         if (e.getSource()==testcurl){
+            hideCreateFolderInput();
+            hidecreateListDocInput();
             new curlAPI();
         }
         else if (e.getSource()== getBookmarks){
+            hideCreateFolderInput();
+            hidecreateListDocInput();
             try {
                 showBookmarks(LogicalDOC_API.getBookmarks());
             } catch (IOException ioException) {
@@ -138,6 +161,36 @@ public class Home extends JFrame implements ActionListener {
                 jsonException.printStackTrace();
             }
         }
+        else if (e.getSource()== listFolder){
+            hideCreateFolderInput();
+            hidecreateListDocInput();
+            try {
+                showFolders(LogicalDOC_API.getFoldersArray());
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+            }
+        }
+        else if (e.getSource()== createFolder){
+            textArea.setText("");
+            showCreateFolderInput();
+        }
+        else if (e.getSource()== submitFolderInput){
+            hidecreateListDocInput();
+            String folderPATH = createFolderInput.getText();
+            if (folderPATH.isEmpty() || folderPATH.equals(folderPATHSearchBar)){
+                textArea.setText("*** ERROR folderPATH cannot be empty ***");
+            }else{
+                try {
+                    LogicalDOC_API.createFolder(folderPATH);
+                    showFolderCreated(folderPATH);
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        }
+        //**** end ****
         /*else if (e.getSource()== addBookmark){
             // 105 = NathanFolder
             int folderId = 105;
@@ -148,27 +201,18 @@ public class Home extends JFrame implements ActionListener {
                 ioException.printStackTrace();
             }
         }*/
-        else if (e.getSource()== listFolder){
+        /*else if (e.getSource()== deleteFolder){
+            int folderID = 110; //ACDC
             try {
-                showFolders(LogicalDOC_API.getFoldersArray());
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            } catch (JSONException jsonException) {
-                jsonException.printStackTrace();
-            }
-        }
-        else if (e.getSource()== createFolder){
-            String folderPATH = "NathanFolder2";
-            /* in future create textfield and get folderPATH from user */
-            try {
-                LogicalDOC_API.createFolder(folderPATH);
-                showFolderCreated(folderPATH);
+                LogicalDOC_API.folderDelete(folderID);
+                textArea.setText("Deleted folder");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-        }
-        //**** end ****
+        }*/
         else if (e.getSource()== uploadDoc){
+            hideCreateFolderInput();
+            hidecreateListDocInput();
             JFileChooser fc = new JFileChooser();
             int i = fc.showOpenDialog(this);
             if (i==JFileChooser.APPROVE_OPTION){
@@ -189,14 +233,41 @@ public class Home extends JFrame implements ActionListener {
             }
         }
         else if (e.getSource()== listDoc){
-            textArea.setText("List Documents");
-            //listDocInput.setVisible(true);
+            textArea.setText("");
+            hideCreateFolderInput();
+            showcreateListDocInput();
+        }
+        else if (e.getSource()== submitListDocInput){
+            //
+            int folderID = 0;
+            //int folderID = 101;
+            if (listDocInput.getText().isEmpty() || listDocInput.getText().equals(folderIdSearchBar)){
+                textArea.setText("*** ERROR folderPATH cannot be empty ***");
+            }else {
+                folderID = Integer.parseInt(listDocInput.getText());
+            }//
+            try {
+                showDocuments(LogicalDOC_API.getDocumentsArray(folderID),folderID);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            } catch (JSONException jsonException) {
+                jsonException.printStackTrace();
+            }
         }
     }
 
-    private void showBookmarkAdded(int folderId) {
-        textArea.setText(MessageFormat.format("{0} added to Bookmarks.",folderId));
+    private void showDocuments(JSONArray documentsArray,int folderID) throws JSONException {
+        textArea.setText(MessageFormat.format("Documents - folderId: {0} [",folderID));
+        for (int i=0; i< documentsArray.length(); i++){
+            JSONObject folder = documentsArray.getJSONObject(i);
+            textArea.append("\n\tfileName: "+folder.get("fileName")+" - ID: "+folder.get("id")+",");
+        }
+        textArea.append("\n]");
     }
+
+    /*private void showBookmarkAdded(int folderId) {
+        textArea.setText(MessageFormat.format("{0} added to Bookmarks.",folderId));
+    }*/
     private void showBookmarks(JSONArray bookmarksArray) throws JSONException {
         textArea.setText("Bookmarks [");
         for (int i=0; i<bookmarksArray.length(); i++){
@@ -218,13 +289,55 @@ public class Home extends JFrame implements ActionListener {
         textArea.append("\nFolder created successfully.");
     }
 
-    //clears the inputField when a user types the url
+
+    //Extra methods to clean up main
     static class MyFocusListener extends FocusAdapter {
         @Override
         public void focusGained(FocusEvent fEvt){
             JTextComponent component = (JTextComponent) fEvt.getSource();
             component.selectAll();
         }
+    }
+    private void createFolderInputANDButton() {
+        //input field
+        createFolderInput = new JTextField("Folder-PATH to create....");
+        createFolderInput.setBounds(5,folderInputLocationY,size-(folderSubmitWidth*2),folderInputLocationHeight);
+        createFolderInput.addFocusListener(new curlAPI.MyFocusListener());
+        //button
+        submitFolderInput = new JButton("Submit");
+        submitFolderInput.setBounds(size-150,folderInputLocationY,folderSubmitWidth,folderInputLocationHeight);
+        submitFolderInput.addActionListener(this);
+    }
+    private void showCreateFolderInput(){
+        createFolderInput.setVisible(true);
+        submitFolderInput.setVisible(true);
+        pack();
+    }
+    private void hideCreateFolderInput(){
+        createFolderInput.setVisible(false);
+        submitFolderInput.setVisible(false);
+        pack();
+    }
+
+    private void createListDocInputANDButton(){
+        //input field
+        createListDocInput = new JTextField("Folder-ID to list documents....");
+        createListDocInput.setBounds(5,folderInputLocationY,size-(folderSubmitWidth*2),folderInputLocationHeight);
+        createListDocInput.addFocusListener(new curlAPI.MyFocusListener());
+        //button
+        submitListDocInput = new JButton("Submit");
+        submitListDocInput.setBounds(size-150,folderInputLocationY,folderSubmitWidth,folderInputLocationHeight);
+        submitListDocInput.addActionListener(this);
+    }
+    private void showcreateListDocInput(){
+        createListDocInput.setVisible(true);
+        submitListDocInput.setVisible(true);
+        pack();
+    }
+    private void hidecreateListDocInput(){
+        createListDocInput.setVisible(false);
+        submitListDocInput.setVisible(false);
+        pack();
     }
 
     public static void main(String[] args) {
