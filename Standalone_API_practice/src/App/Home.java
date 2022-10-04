@@ -190,26 +190,6 @@ public class Home extends JFrame implements ActionListener {
                 }
             }
         }
-        //**** end ****
-        /*else if (e.getSource()== addBookmark){
-            // 105 = NathanFolder
-            int folderId = 105;
-            try {
-                LogicalDOC_API.addBookmark();
-                showBookmarkAdded(folderId);
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }*/
-        /*else if (e.getSource()== deleteFolder){
-            int folderID = 110; //ACDC
-            try {
-                LogicalDOC_API.folderDelete(folderID);
-                textArea.setText("Deleted folder");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }*/
         else if (e.getSource()== uploadDoc){
             hideCreateFolderInput();
             hidecreateListDocInput();
